@@ -1,42 +1,15 @@
 package pl.javastart.voting;
 
+import java.util.List;
+
 /**
  * Możesz dodać kolejne metody i pola do klasy. Nie zmieniaj istniejących metod.
  */
 public class VotingResult {
-    float percentVotesFor;
-    float percentVotesAgainst;
-    float percentAbstentions;
+    List<Vote> votes;
 
-    public VotingResult(float percentVotesFor, float percentVotesAgainst, float percentAbstentions) {
-        this.percentVotesFor = percentVotesFor;
-        this.percentVotesAgainst = percentVotesAgainst;
-        this.percentAbstentions = percentAbstentions;
-
-    }
-
-    public float getPercentVotesFor() {
-        return percentVotesFor;
-    }
-
-    public void setPercentVotesFor(float percentVotesFor) {
-        this.percentVotesFor = percentVotesFor;
-    }
-
-    public float getPercentVotesAgainst() {
-        return percentVotesAgainst;
-    }
-
-    public void setPercentVotesAgainst(float percentVotesAgainst) {
-        this.percentVotesAgainst = percentVotesAgainst;
-    }
-
-    public float getPercentAbstentions() {
-        return percentAbstentions;
-    }
-
-    public void setPercentAbstentions(float percentAbstentions) {
-        this.percentAbstentions = percentAbstentions;
+    VotingResult(List<Vote> votes) {
+        this.votes = votes;
     }
 
     /**
@@ -45,10 +18,25 @@ public class VotingResult {
      * Głosów przeciw: 35.00%
      * Wstrzymało się: 8.47%
      */
-    public void printResults() {
-        System.out.printf("Głosów za: %.2f%%\n", percentVotesFor);
-        System.out.printf("Głosów przeciw: %.2f%%\n", percentVotesAgainst);
-        System.out.printf("Wstrzymało się: %.2f%%\n", percentAbstentions);
+    void printResults() {
+        float voteFor = 0;
+        float voteAgainst = 0;
+        float abstension = 0;
+        for (Vote vote : votes) {
+            if (vote.getVote() == null) {
+                abstension++;
+            } else if (vote.getVote().equals(true)) {
+                voteFor++;
+            } else {
+                voteAgainst++;
+            }
+        }
+        float votesFor = voteFor / votes.size() * 100;
+        float votesAgainst = voteAgainst / votes.size() * 100;
+        float abstenion = abstension / votes.size() * 100;
+        System.out.printf("Głosów za: %.2f%%\n", votesFor);
+        System.out.printf("Głosów przeciw: %.2f%%\n", votesAgainst);
+        System.out.printf("Wstrzymało się: %.2f%%\n", abstenion);
         // metoda powinna drukować wyniki głosowania
     }
 
@@ -58,7 +46,22 @@ public class VotingResult {
      * Zigniew Siobro: ZA
      * Nie zmieniaj sygnatury tej metody!
      */
-    public void printVoteForVoter(String voterName) {
-        System.out.println(voterName);
+    void printVoteForVoter(String voterName) {
+        for (Vote vote : votes) {
+            if (vote.getVoter().equals(voterName)) {
+                System.out.println(vote.getVoter() + ": " + voteConversion(vote.getVote()));
+            }
+        }
+    }
+
+    private String voteConversion(Boolean vote) {
+        if (vote == null) {
+            return "WSTRZYMAŁ SIĘ";
+        }
+        if (!vote) {
+            return "PRZECIW";
+        } else {
+            return "ZA";
+        }
     }
 }
